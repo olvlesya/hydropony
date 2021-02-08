@@ -25,7 +25,6 @@ export class Chart extends React.Component<Props, State> {
     refAreaLeft: "",
     refAreaRight: "",
     top: "dataMax",
-    bottom: "dataMin",
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -36,8 +35,8 @@ export class Chart extends React.Component<Props, State> {
       this.setState(this.calculateVisibleDataAndLimits());
     }
     if (this.props.lineKeys !== prevProps.lineKeys) {
-      const [bottom, top] = this.getAxisYDomain(this.state.visibleData);
-      this.setState({ bottom, top });
+      const top = this.getAxisYDomain(this.state.visibleData);
+      this.setState({ top });
     }
   }
 
@@ -51,13 +50,12 @@ export class Chart extends React.Component<Props, State> {
     }
 
     const visibleData = throttleData(data);
-    const [bottom, top] = this.getAxisYDomain(visibleData);
-    return { visibleData, bottom, top, refAreaLeft: "", refAreaRight: "" };
+    const top = this.getAxisYDomain(visibleData);
+    return { visibleData, top, refAreaLeft: "", refAreaRight: "" };
   }
 
   getAxisYDomain = (refData: dataItem[]) => {
     const { lineKeys } = this.props;
-    let bottom = Infinity;
     let top = -Infinity;
     refData.forEach((d) => {
       lineKeys.forEach((key) => {
@@ -65,13 +63,10 @@ export class Chart extends React.Component<Props, State> {
         if (value > top) {
           top = value;
         }
-        if (value < bottom) {
-          bottom = value;
-        }
       });
     });
 
-    return [(bottom - 20) | 0, (top + 20) | 0];
+    return (top + 20) | 0;
   };
 
   zoom = () => {
@@ -97,19 +92,18 @@ export class Chart extends React.Component<Props, State> {
       data.findIndex((entry) => entry[xAxisKey] === refAreaLeft) - 1;
     const toIndex = data.findIndex((entry) => entry[xAxisKey] === refAreaRight);
     const refData = data.slice(fromIndex, toIndex);
-    const [bottom, top] = this.getAxisYDomain(refData);
+    const top = this.getAxisYDomain(refData);
 
     this.setState(() => ({
       visibleData: throttleData(refData),
       refAreaLeft: "",
       refAreaRight: "",
-      bottom,
       top,
     }));
   };
 
   render() {
-    const { refAreaLeft, refAreaRight, top, bottom, visibleData } = this.state;
+    const { refAreaLeft, refAreaRight, top, visibleData } = this.state;
     const { xAxisKey, lineKeys } = this.props;
 
     return (
@@ -132,7 +126,7 @@ export class Chart extends React.Component<Props, State> {
           <XAxis allowDataOverflow dataKey={xAxisKey} type="category" />
           <YAxis
             allowDataOverflow
-            domain={[bottom, top]}
+            domain={[0, top]}
             type="number"
             yAxisId="1"
           />

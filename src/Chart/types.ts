@@ -12,5 +12,4 @@ export type State = {
   refAreaLeft: string;
   refAreaRight: string;
   top: string | number;
-  bottom: string | number;
 };
