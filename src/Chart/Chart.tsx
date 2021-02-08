@@ -10,6 +10,8 @@ import {
 } from "recharts";
 import { State, Props, dataItem } from "./types";
 
+const colorPalette = ["#364f6b", "#fc5185"];
+
 const throttleData = (data: dataItem[], limit = 100) => {
   if (data.length < limit) {
     return data;
@@ -20,8 +22,6 @@ const throttleData = (data: dataItem[], limit = 100) => {
 export class Chart extends React.Component<Props, State> {
   state = {
     visibleData: throttleData(this.props.data),
-    left: "dataMin",
-    right: "dataMax",
     refAreaLeft: "",
     refAreaRight: "",
     top: "dataMax",
@@ -34,12 +34,16 @@ export class Chart extends React.Component<Props, State> {
       const [bottom, top] = this.getAxisYDomain(visibleData);
       this.setState({ visibleData, bottom, top });
     }
+    if (this.props.lineKeys !== prevProps.lineKeys) {
+      const [bottom, top] = this.getAxisYDomain(this.state.visibleData);
+      this.setState({ bottom, top });
+    }
   }
 
   getAxisYDomain = (refData: dataItem[]) => {
     const { lineKeys } = this.props;
-    let bottom = Number(refData[0][lineKeys[0]]);
-    let top = bottom;
+    let bottom = Infinity;
+    let top = -Infinity;
     refData.forEach((d) => {
       lineKeys.forEach((key) => {
         const value = Number(d[key]);
@@ -123,7 +127,7 @@ export class Chart extends React.Component<Props, State> {
             }
             onMouseUp={this.zoom}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid fill="#f5f5f5" strokeDasharray="3 3" />
             <XAxis allowDataOverflow dataKey={xAxisKey} type="category" />
             <YAxis
               allowDataOverflow
@@ -132,12 +136,13 @@ export class Chart extends React.Component<Props, State> {
               yAxisId="1"
             />
             <Tooltip />
-            {lineKeys.map((key) => (
+            {lineKeys.map((key, id) => (
               <Line
                 key={key}
                 yAxisId="1"
                 type="natural"
                 dataKey={key}
+                stroke={colorPalette[id]}
                 animationDuration={300}
               />
             ))}

@@ -51,7 +51,5 @@ export const useChartsData = (activeEntities: string[]) => {
       });
   }, [activeEntities]);
 
-  console.log(data, normalizedData);
-
   return data;
 };

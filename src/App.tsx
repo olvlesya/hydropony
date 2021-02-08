@@ -8,7 +8,7 @@ import "./App.css";
 const entities = ["IBM", "TSCO.LON"];
 
 function App() {
-  const [activeEntities, setActiveEntities] = useState<string[]>(["IBM"]);
+  const [activeEntities, setActiveEntities] = useState<string[]>([]);
   const data = useChartsData(activeEntities);
 
   return (
