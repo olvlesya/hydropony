@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dataItem } from "./Chart/types";
+import { dataItem } from "../Chart/types";
 
 type normalized = {
   [key: string]: {
@@ -20,8 +20,11 @@ const normalizedDataToArray = (data: normalized): dataItem[] =>
     // keys are sorted in a wrong order
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-export const useChartsData = (activeEntities: string[]) => {
+export const useChartsData = (
+  activeEntities: string[]
+): [dataItem[], boolean] => {
   const [data, setData] = useState<dataItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     // We don't request what was already requested
@@ -31,6 +34,8 @@ export const useChartsData = (activeEntities: string[]) => {
     if (!entityToFetch) {
       return;
     }
+
+    setIsLoading(true);
 
     fetch(
       `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=${entityToFetch}&outputsize=full&apikey=demo`
@@ -45,11 +50,11 @@ export const useChartsData = (activeEntities: string[]) => {
             [entityToFetch]: value,
           };
         });
-        const data = normalizedDataToArray(normalizedData);
         cachedEntities.push(entityToFetch);
-        setData(data);
+        setData(normalizedDataToArray(normalizedData));
+        setIsLoading(false);
       });
   }, [activeEntities]);
 
-  return data;
+  return [data, isLoading];
 };

@@ -4,6 +4,7 @@ export type Props = {
   data: dataItem[];
   xAxisKey: string;
   lineKeys: string[];
+  dateLimit?: number;
 };
 
 export type State = {

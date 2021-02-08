@@ -29,15 +29,30 @@ export class Chart extends React.Component<Props, State> {
   };
 
   componentDidUpdate(prevProps: Props) {
-    if (this.props.data !== prevProps.data) {
-      const visibleData = throttleData(this.props.data);
-      const [bottom, top] = this.getAxisYDomain(visibleData);
-      this.setState({ visibleData, bottom, top });
+    if (
+      this.props.data !== prevProps.data ||
+      this.props.dateLimit !== prevProps.dateLimit
+    ) {
+      this.setState(this.calculateVisibleDataAndLimits());
     }
     if (this.props.lineKeys !== prevProps.lineKeys) {
       const [bottom, top] = this.getAxisYDomain(this.state.visibleData);
       this.setState({ bottom, top });
     }
+  }
+
+  calculateVisibleDataAndLimits() {
+    const { dateLimit } = this.props;
+    let { data } = this.props;
+    if (dateLimit) {
+      const date = new Date();
+      date.setMonth(date.getMonth() - dateLimit);
+      data = this.props.data.filter((d) => new Date(d.date) > date);
+    }
+
+    const visibleData = throttleData(data);
+    const [bottom, top] = this.getAxisYDomain(visibleData);
+    return { visibleData, bottom, top, refAreaLeft: "", refAreaRight: "" };
   }
 
   getAxisYDomain = (refData: dataItem[]) => {
@@ -93,71 +108,56 @@ export class Chart extends React.Component<Props, State> {
     }));
   };
 
-  zoomOut = () => {
-    const visibleData = throttleData(this.props.data);
-    const [bottom, top] = this.getAxisYDomain(visibleData);
-    this.setState({
-      visibleData,
-      refAreaLeft: "",
-      refAreaRight: "",
-      top,
-      bottom,
-    });
-  };
-
   render() {
     const { refAreaLeft, refAreaRight, top, bottom, visibleData } = this.state;
     const { xAxisKey, lineKeys } = this.props;
 
     return (
-      <div>
-        <button onClick={this.zoomOut}>Zoom Out</button>
-
-        {visibleData.length > 0 && (
-          <LineChart
-            width={800}
-            height={400}
-            data={visibleData}
-            onMouseDown={(e: { activeLabel: string }) =>
-              this.setState({ refAreaLeft: e.activeLabel })
-            }
-            onMouseMove={(e: { activeLabel: string }) =>
-              this.state.refAreaLeft &&
-              this.setState({ refAreaRight: e.activeLabel })
-            }
-            onMouseUp={this.zoom}
-          >
-            <CartesianGrid fill="#f5f5f5" strokeDasharray="3 3" />
-            <XAxis allowDataOverflow dataKey={xAxisKey} type="category" />
-            <YAxis
-              allowDataOverflow
-              domain={[bottom, top]}
-              type="number"
+      visibleData.length > 0 &&
+      lineKeys.length > 0 && (
+        <LineChart
+          width={800}
+          height={400}
+          data={visibleData}
+          onMouseDown={(e: { activeLabel: string }) =>
+            this.setState({ refAreaLeft: e.activeLabel })
+          }
+          onMouseMove={(e: { activeLabel: string }) =>
+            this.state.refAreaLeft &&
+            this.setState({ refAreaRight: e.activeLabel })
+          }
+          onMouseUp={this.zoom}
+        >
+          <CartesianGrid fill="#f5f5f5" strokeDasharray="3 3" />
+          <XAxis allowDataOverflow dataKey={xAxisKey} type="category" />
+          <YAxis
+            allowDataOverflow
+            domain={[bottom, top]}
+            type="number"
+            yAxisId="1"
+          />
+          <Tooltip />
+          {lineKeys.map((key, id) => (
+            <Line
+              key={key}
               yAxisId="1"
+              type="natural"
+              dataKey={key}
+              stroke={colorPalette[id]}
+              animationDuration={300}
             />
-            <Tooltip />
-            {lineKeys.map((key, id) => (
-              <Line
-                key={key}
-                yAxisId="1"
-                type="natural"
-                dataKey={key}
-                stroke={colorPalette[id]}
-                animationDuration={300}
-              />
-            ))}
+          ))}
 
-            {refAreaLeft && refAreaRight ? (
-              <ReferenceArea
-                yAxisId="1"
-                x1={refAreaLeft}
-                x2={refAreaRight}
-                strokeOpacity={0.3}
-              />
-            ) : null}
-          </LineChart>
-        )}
-      </div>
+          {refAreaLeft && refAreaRight ? (
+            <ReferenceArea
+              yAxisId="1"
+              x1={refAreaLeft}
+              x2={refAreaRight}
+              strokeOpacity={0.3}
+            />
+          ) : null}
+        </LineChart>
+      )
     );
   }
 }
