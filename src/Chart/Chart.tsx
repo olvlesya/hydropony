@@ -10,21 +10,29 @@ import {
 } from "recharts";
 import { State, Props, dataItem } from "./types";
 
+const throttleData = (data: dataItem[], limit = 100) => {
+  if (data.length < limit) {
+    return data;
+  }
+  const everyIndex = Math.floor(data.length / limit);
+  return data.filter((_i, id) => id % everyIndex === 0);
+};
 export class Chart extends React.Component<Props, State> {
   state = {
-    visibleData: this.props.data,
+    visibleData: throttleData(this.props.data),
     left: "dataMin",
     right: "dataMax",
     refAreaLeft: "",
     refAreaRight: "",
-    top: "dataMax+20",
-    bottom: "dataMin-20",
+    top: "dataMax",
+    bottom: "dataMin",
   };
 
   componentDidUpdate(prevProps: Props) {
-    console.log(this.props.data === prevProps.data);
     if (this.props.data !== prevProps.data) {
-      this.setState({ visibleData: this.props.data });
+      const visibleData = throttleData(this.props.data);
+      const [bottom, top] = this.getAxisYDomain(visibleData);
+      this.setState({ visibleData, bottom, top });
     }
   }
 
@@ -44,7 +52,7 @@ export class Chart extends React.Component<Props, State> {
       });
     });
 
-    return [(bottom | 0) - 20, (top | 0) + 20];
+    return [(bottom - 20) | 0, (top + 20) | 0];
   };
 
   zoom = () => {
@@ -65,6 +73,7 @@ export class Chart extends React.Component<Props, State> {
     }
 
     // yAxis domain
+    // FIXME: fromIndex < toIndex
     const fromIndex =
       data.findIndex((entry) => entry[xAxisKey] === refAreaLeft) - 1;
     const toIndex = data.findIndex((entry) => entry[xAxisKey] === refAreaRight);
@@ -72,7 +81,7 @@ export class Chart extends React.Component<Props, State> {
     const [bottom, top] = this.getAxisYDomain(refData);
 
     this.setState(() => ({
-      visibleData: refData,
+      visibleData: throttleData(refData),
       refAreaLeft: "",
       refAreaRight: "",
       bottom,
@@ -81,13 +90,15 @@ export class Chart extends React.Component<Props, State> {
   };
 
   zoomOut = () => {
-    this.setState(() => ({
-      visibleData: this.props.data,
+    const visibleData = throttleData(this.props.data);
+    const [bottom, top] = this.getAxisYDomain(visibleData);
+    this.setState({
+      visibleData,
       refAreaLeft: "",
       refAreaRight: "",
-      top: "dataMax+20",
-      bottom: "dataMin-20",
-    }));
+      top,
+      bottom,
+    });
   };
 
   render() {
@@ -95,12 +106,9 @@ export class Chart extends React.Component<Props, State> {
     const { xAxisKey, lineKeys } = this.props;
 
     return (
-      <div className="highlight-bar-charts">
-        <button className="btn update" onClick={this.zoomOut}>
-          Zoom Out
-        </button>
+      <div>
+        <button onClick={this.zoomOut}>Zoom Out</button>
 
-        <p>Highlight / Zoom - able Line Chart</p>
         {visibleData.length > 0 && (
           <LineChart
             width={800}
