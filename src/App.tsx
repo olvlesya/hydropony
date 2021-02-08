@@ -1,15 +1,19 @@
 import React, { useState } from "react";
 import { Checkbox, Radio } from "antd";
+import { useRecoilState } from "recoil";
 import { Chart } from "./Chart";
 import "antd/dist/antd.css";
 import { useChartsData } from "./customHooks/useChartsData";
+import { activeEntitiesAtom } from "./state/activeEntitiesAtom";
 import styles from "./App.module.css";
 
 const entities = ["IBM", "TSCO.LON"];
 const defaultDateLimit = 1;
 
 function App() {
-  const [activeEntities, setActiveEntities] = useState<string[]>([]);
+  const [activeEntities, setActiveEntities] = useRecoilState(
+    activeEntitiesAtom
+  );
   const [data, isLoading] = useChartsData(activeEntities);
   const [dateLimit, setDateLimit] = useState<number>(defaultDateLimit);
 
