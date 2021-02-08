@@ -1,44 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Checkbox } from "antd";
 import { Chart } from "./Chart";
-import { dataItem } from "./Chart/types";
+import "antd/dist/antd.css";
+import { useChartsData } from "./useChartsData";
 import "./App.css";
 
-const entities = ["IBM", "TSCO.LON"] as const;
+const entities = ["IBM", "TSCO.LON"];
 
 function App() {
-  const [testData, setTestData] = useState<dataItem[]>([]);
-  const [activeEntities, setActiveEntities] = useState<string[]>([]);
-
-  useEffect(() => {
-    fetch(
-      "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&outputsize=full&apikey=demo"
-    )
-      .then((r) => r.json())
-      .then((series) => {
-        const daily = series["Time Series (Daily)"];
-        const data = Object.keys(daily)
-          .map((date) => ({
-            date,
-            IBM: Number(daily[date]["4. close"]),
-          }))
-          // keys are sorted in a wrong order
-          .sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-          );
-
-        setTestData(data);
-      });
-  }, []);
+  const [activeEntities, setActiveEntities] = useState<string[]>(["IBM"]);
+  const data = useChartsData(activeEntities);
 
   return (
     <div>
-      {entities.map((entity) => (
-        <label key={entity}>
-          {entity}
-          <input type="checkbox" value={entity} />
-        </label>
-      ))}
-      <Chart data={testData} xAxisKey="date" lineKeys={["IBM"]} />
+      <Checkbox.Group
+        options={entities}
+        value={activeEntities}
+        onChange={(selectedItems) => {
+          setActiveEntities(selectedItems as string[]);
+        }}
+      />
+      <Chart data={data} xAxisKey="date" lineKeys={activeEntities} />
     </div>
   );
 }
