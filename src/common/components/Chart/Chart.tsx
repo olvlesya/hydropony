@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { State, Props, dataItem } from "./types";
 
-const colorPalette = ["#364f6b", "#fc5185"];
+const colorPalette = ["#364f6b", "#fc5185", "#91091e", "#007965"];
 
 const throttleData = (data: dataItem[], limit = 100) => {
   if (data.length < limit) {

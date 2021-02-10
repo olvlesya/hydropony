@@ -1,23 +1,24 @@
 import React from "react";
-import { useRecoilState } from "recoil";
 import { Radio } from "antd";
-import { dateRangeAtom } from "../state/dateRangeAtom";
+import { RecoilState, useRecoilState } from "recoil";
 
 type Props = {
   disabled?: boolean;
 };
 
-export const DateSelector: React.FC<Props> = ({ disabled }) => {
-  const [dateLimit, setDateLimit] = useRecoilState(dateRangeAtom);
+export const getDateSelector = (
+  recoilState: RecoilState<number>
+): React.FC<Props> => ({ disabled }) => {
+  const [value, setValue] = useRecoilState(recoilState);
 
   return (
     <Radio.Group
       disabled={disabled}
       buttonStyle="solid"
       onChange={(e) => {
-        setDateLimit(e.target.value);
+        setValue(e.target.value);
       }}
-      value={dateLimit}
+      value={value}
     >
       <Radio.Button value={1}>Last month</Radio.Button>
       <Radio.Button value={12}>Last year</Radio.Button>

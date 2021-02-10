@@ -5,21 +5,21 @@ import "antd/dist/antd.css";
 import { useChartsData } from "../../common/customHooks/useChartsData";
 import {
   activeEntitiesAtom,
-  cachedEntitiesAtom,
-  dateRangeAtom,
   normalizedDataAtom,
+  dateRangeAtom,
+  cachedEntitiesAtom,
 } from "./state";
 import { getControlPanel } from "../../common/components/ControlPanel";
 
 const ControlPanel = getControlPanel(activeEntitiesAtom, dateRangeAtom);
-const entities = ["IBM", "TSCO.LON", "TESO", "BABA"];
+const entities = ["IBM", "BABA"];
 
-export const DailyChart: React.FC = () => {
+export const IntradayChart: React.FC = () => {
   const activeEntities = useRecoilValue(activeEntitiesAtom);
   const dateLimit = useRecoilValue(dateRangeAtom);
   const [data, isLoading] = useChartsData(
-    "TIME_SERIES_DAILY&outputsize=full",
-    "Time Series (Daily)",
+    "TIME_SERIES_INTRADAY&interval=5min",
+    "Time Series (5min)",
     activeEntities,
     normalizedDataAtom,
     cachedEntitiesAtom
