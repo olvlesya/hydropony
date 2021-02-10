@@ -94,7 +94,7 @@ export const useChartsData = (
     }
 
     refresh(entityToFetch);
-  }, [activeEntities]);
+  }, [activeEntities]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // refresh active data every 15 mins
   // react-query could be the best solution
@@ -105,7 +105,7 @@ export const useChartsData = (
     return () => {
       clearInterval(intervalId);
     };
-  }, [activeEntities]);
+  }, [activeEntities]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return [data, isLoading];
 };
