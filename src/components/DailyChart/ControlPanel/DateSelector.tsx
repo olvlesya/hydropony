@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { Radio } from "antd";
-import { dateRangeAtom } from "../../state/dateRangeAtom";
+import { dateRangeAtom } from "../state/dateRangeAtom";
 
 type Props = {
   disabled?: boolean;

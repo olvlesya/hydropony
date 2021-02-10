@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dataItem } from "../components/Chart/types";
+import { dataItem } from "../Chart/types";
 
 type normalized = {
   [key: string]: {

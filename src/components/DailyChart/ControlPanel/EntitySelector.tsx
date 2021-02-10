@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { Checkbox } from "antd";
-import { activeEntitiesAtom } from "../../state/activeEntitiesAtom";
+import { activeEntitiesAtom } from "../state/activeEntitiesAtom";
+import { CheckboxGroup } from "../../../common/components/CheckboxGroup";
 
 const entities = ["IBM", "TSCO.LON"];
 
@@ -14,13 +14,11 @@ export const EntitySelector: React.FC<Props> = ({ disabled }) => {
     activeEntitiesAtom
   );
   return (
-    <Checkbox.Group
+    <CheckboxGroup
       options={entities}
       disabled={disabled}
       value={activeEntities}
-      onChange={(selectedItems) => {
-        setActiveEntities(selectedItems as string[]);
-      }}
+      onChange={setActiveEntities}
     />
   );
 };
