@@ -97,7 +97,7 @@ export const useChartsData = (
   }, [activeEntities]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // refresh active data every 15 mins
-  // react-query could be the best solution
+  // TODO: react-query could be the best solution
   useEffect(() => {
     const intervalId = setInterval(() => {
       activeEntities.forEach(refresh);
