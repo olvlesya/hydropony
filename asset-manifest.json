@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/hydropony/static/css/main.57da3d45.chunk.css",
-    "main.js": "/hydropony/static/js/main.c1eccf1f.chunk.js",
-    "main.js.map": "/hydropony/static/js/main.c1eccf1f.chunk.js.map",
+    "main.js": "/hydropony/static/js/main.a2b3128e.chunk.js",
+    "main.js.map": "/hydropony/static/js/main.a2b3128e.chunk.js.map",
     "runtime-main.js": "/hydropony/static/js/runtime-main.1377b403.js",
     "runtime-main.js.map": "/hydropony/static/js/runtime-main.1377b403.js.map",
     "static/css/2.79c08235.chunk.css": "/hydropony/static/css/2.79c08235.chunk.css",
@@ -20,6 +20,6 @@
     "static/css/2.79c08235.chunk.css",
     "static/js/2.cde71d1d.chunk.js",
     "static/css/main.57da3d45.chunk.css",
-    "static/js/main.c1eccf1f.chunk.js"
+    "static/js/main.a2b3128e.chunk.js"
   ]
 }
