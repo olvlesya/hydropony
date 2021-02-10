@@ -4,11 +4,12 @@ import { RecoilState, useRecoilState } from "recoil";
 
 type Props = {
   disabled?: boolean;
+  options: Array<{ label: string; value: number }>;
 };
 
 export const getDateSelector = (
   recoilState: RecoilState<number>
-): React.FC<Props> => ({ disabled }) => {
+): React.FC<Props> => ({ disabled, options }) => {
   const [value, setValue] = useRecoilState(recoilState);
 
   return (
@@ -20,10 +21,11 @@ export const getDateSelector = (
       }}
       value={value}
     >
-      <Radio.Button value={1}>Last month</Radio.Button>
-      <Radio.Button value={12}>Last year</Radio.Button>
-      <Radio.Button value={36}>3 years</Radio.Button>
-      <Radio.Button value={0}>All data</Radio.Button>
+      {options.map(({ value, label }) => (
+        <Radio.Button key={value} value={value}>
+          {label}
+        </Radio.Button>
+      ))}
     </Radio.Group>
   );
 };

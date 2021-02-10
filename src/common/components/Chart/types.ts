@@ -5,6 +5,7 @@ export type Props = {
   xAxisKey: string;
   lineKeys: string[];
   dateLimit?: number;
+  precision: "month" | "hour";
 };
 
 export type State = {

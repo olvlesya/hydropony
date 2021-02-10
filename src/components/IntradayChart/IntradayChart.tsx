@@ -13,6 +13,12 @@ import { getControlPanel } from "../../common/components/ControlPanel";
 
 const ControlPanel = getControlPanel(activeEntitiesAtom, dateRangeAtom);
 const entities = ["IBM", "BABA"];
+const dateOptions = [
+  { value: 1, label: "1 hour" },
+  { value: 3, label: "3 hours" },
+  { value: 6, label: "6 hours" },
+  { value: 0, label: "All data" },
+];
 
 export const IntradayChart: React.FC = () => {
   const activeEntities = useRecoilValue(activeEntitiesAtom);
@@ -27,7 +33,9 @@ export const IntradayChart: React.FC = () => {
 
   return (
     <section>
+      <h2>Intraday Chart</h2>
       <ControlPanel
+        dateOptions={dateOptions}
         entities={entities}
         disabled={isLoading}
         showDateRange={data.length > 0}
@@ -42,6 +50,7 @@ export const IntradayChart: React.FC = () => {
         minutes.
       </p>
       <Chart
+        precision="hour"
         data={data}
         dateLimit={dateLimit}
         xAxisKey="date"

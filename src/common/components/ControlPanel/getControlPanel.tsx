@@ -8,6 +8,7 @@ type Props = {
   disabled?: boolean;
   showDateRange?: boolean;
   entities: string[];
+  dateOptions: Array<{ label: string; value: number }>;
 };
 
 export const getControlPanel = (
@@ -17,11 +18,13 @@ export const getControlPanel = (
   const EntitySelector = getCheckboxGroup(entityAtom);
   const DateSelector = getDateSelector(dateAtom);
 
-  return ({ disabled, showDateRange, entities }) => {
+  return ({ disabled, showDateRange, entities, dateOptions }) => {
     return (
       <section className={styles.controlPanel}>
         <EntitySelector options={entities} disabled={disabled} />
-        {showDateRange && <DateSelector disabled={disabled} />}
+        {showDateRange && (
+          <DateSelector options={dateOptions} disabled={disabled} />
+        )}
       </section>
     );
   };

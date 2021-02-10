@@ -97,6 +97,7 @@ export const useChartsData = (
   }, [activeEntities]);
 
   // refresh active data every 15 mins
+  // react-query could be the best solution
   useEffect(() => {
     const intervalId = setInterval(() => {
       activeEntities.forEach(refresh);

@@ -41,11 +41,16 @@ export class Chart extends React.Component<Props, State> {
   }
 
   calculateVisibleDataAndLimits() {
-    const { dateLimit } = this.props;
+    const { dateLimit, precision } = this.props;
     let { data } = this.props;
     if (dateLimit) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - dateLimit);
+      const date = new Date(this.props.data[this.props.data.length - 1].date);
+      if (precision === "month") {
+        date.setMonth(date.getMonth() - dateLimit);
+      }
+      if (precision === "hour") {
+        date.setHours(date.getHours() - dateLimit);
+      }
       data = this.props.data.filter((d) => new Date(d.date) > date);
     }
 

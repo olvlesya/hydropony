@@ -2,6 +2,7 @@
   "name": "hydropony",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://olvlesya.github.io/hydropony/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",

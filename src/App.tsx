@@ -7,6 +7,7 @@ function App() {
   return (
     <section>
       <DailyChart />
+      <hr />
       <IntradayChart />
     </section>
   );

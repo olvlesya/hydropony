@@ -13,6 +13,12 @@ import { getControlPanel } from "../../common/components/ControlPanel";
 
 const ControlPanel = getControlPanel(activeEntitiesAtom, dateRangeAtom);
 const entities = ["IBM", "TSCO.LON", "TESO", "BABA"];
+const dateOptions = [
+  { value: 1, label: "Last month" },
+  { value: 12, label: "Last year" },
+  { value: 36, label: "3 years" },
+  { value: 0, label: "All data" },
+];
 
 export const DailyChart: React.FC = () => {
   const activeEntities = useRecoilValue(activeEntitiesAtom);
@@ -27,7 +33,9 @@ export const DailyChart: React.FC = () => {
 
   return (
     <section>
+      <h2>Daily Chart</h2>
       <ControlPanel
+        dateOptions={dateOptions}
         entities={entities}
         disabled={isLoading}
         showDateRange={data.length > 0}
@@ -42,6 +50,7 @@ export const DailyChart: React.FC = () => {
         minutes.
       </p>
       <Chart
+        precision="month"
         data={data}
         dateLimit={dateLimit}
         xAxisKey="date"
